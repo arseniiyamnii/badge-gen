@@ -1,0 +1,53 @@
+#!/bin/bash
+
+
+generate_side () {
+    defaultFontSize=15
+    FONTSIZE=${3:-$defaultFontSize}
+    defaultFont="Ubuntu"
+    FONT=${4:-$defaultFont}
+    defaultColor1="snow"
+    defaultColor2="navy"
+    GCOLOR1=${5:-$defaultColor1}
+    GCOLOR2=${6:-$defaultColor2}
+    defaultFontColor="black"
+    FONTCOLOR=${7:-$defaultFontColor}
+    convert -background none -fill $FONTCOLOR -pointsize $FONTSIZE -font $FONT label:$1 label-temp.png
+    ImgSize=$(identify -format "%wx%h" label-temp.png)
+    convert -size $ImgSize gradient:$GCOLOR1-$GCOLOR2 gradient-temp.png
+    composite -gravity center label-temp.png gradient-temp.png $2.png
+    rm gradient-temp.png label-temp.png
+}
+
+
+generate_badge () {
+    generate_side "$4" "temp_left" $3 "$2" "$6" "$7" "$5"
+    generate_side "$8" "temp_rigth" "$3" "$2" "${10}" "${11}" "$9"
+    convert temp_left.png temp_rigth.png +append $1
+    rm temp_left.png temp_rigth.png
+}
+
+
+parse_json () {
+    sample=$(jq '.badges' .badge.json)
+    for row in $(echo "${sample}" | jq -r '.[] | @base64'); do
+        _jq() {
+         echo ${row} | base64 --decode | jq -r ${1}
+        }
+    FILENAME=$(_jq '.outfile')
+    FONT=$(_jq '.font')
+    FONT_SIZE=$(_jq '.font_size')
+    LEFT_TEXT=$(_jq '.left.text')
+    LEFT_FONT=$(_jq '.left.font_color')
+    LEFT_COLOR1=$(_jq '.left.color1')
+    LEFT_COLOR2=$(_jq '.left.color2')
+    RIGTH_TEXT=$(_jq '.rigth.text')
+    RIGTH_FONT=$(_jq '.rigth.font_color')
+    RIGTH_COLOR1=$(_jq '.rigth.color1')
+    RIGTH_COLOR2=$(_jq '.rigth.color2')
+    generate_badge $FILENAME $FONT $FONT_SIZE $LEFT_TEXT $LEFT_FONT $LEFT_COLOR1 $LEFT_COLOR2 $RIGTH_TEXT $RIGTH_FONT $RIGTH_COLOR1 $RIGTH_COLOR2
+    done
+}
+
+
+parse_json

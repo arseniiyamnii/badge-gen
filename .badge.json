@@ -1,0 +1,22 @@
+{
+    "badges": [
+        {"outfile":"linter2525.png",
+        "font":"Ubuntu",
+        "font_size":15,
+        "left":{
+            "text":"python",
+            "font_color":"black",
+            "color1":"white",
+            "color2":"#ff0000"
+        },
+        "rigth":{
+            "text":"3.4",
+            "font_color":"black",
+            "color1":"green",
+            "color2":"green"
+         
+        }
+        }
+    ]
+
+}
