@@ -12,9 +12,9 @@ generate_side () {
     GCOLOR2=${6:-$defaultColor2}
     defaultFontColor="black"
     FONTCOLOR=${7:-$defaultFontColor}
-    convert -background none -fill $FONTCOLOR -pointsize $FONTSIZE -font $FONT label:$1 label-temp.png
+    convert -background none -fill "$FONTCOLOR" -pointsize "$FONTSIZE" -font "$FONT" label:"$1" label-temp.png
     ImgSize=$(identify -format "%wx%h" label-temp.png)
-    convert -size $ImgSize gradient:$GCOLOR1-$GCOLOR2 gradient-temp.png
+    convert -size "$ImgSize" gradient:"$GCOLOR1"-"$GCOLOR2" gradient-temp.png
     composite -gravity center label-temp.png gradient-temp.png $2.png
     rm gradient-temp.png label-temp.png
 }
